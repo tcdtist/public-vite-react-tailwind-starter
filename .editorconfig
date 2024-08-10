@@ -1,0 +1,16 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+root = true                         # This is the root configuration file, stop searching for other .editorconfig files
+
+[*]                                 # Apply to all file types
+charset = utf-8                     # Set character encoding to UTF-8
+end_of_line = lf                    # Use line feed (LF) as line ending character
+trim_trailing_whitespace = true     # Remove trailing whitespace at the end of lines
+insert_final_newline = true         # Ensure files end with a newline
+
+[{*.ts,*.tsx,*.js,*.jsx}]           # Apply to TypeScript and JavaScript files
+max_line_length = 100               # Set maximum line length to 100 characters
+
+[{*.md,*.yml}]                      # Apply to Markdown, and YAML files
+indent_style = space                # Use spaces for indentation
+indent_size = 2                     # Indent with 2 spaces
