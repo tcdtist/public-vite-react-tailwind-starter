@@ -1,5 +1,5 @@
-export const DEBUG = process.env.NODE_ENV !== 'production'
-export const PRODUCTION = process.env.VITE_NODE_ENV === 'production'
+export const DEBUG = import.meta.env.NODE_ENV !== 'production'
+export const PRODUCTION = import.meta.env.VITE_NODE_ENV === 'production'
 
 export const APP_NAME = 'Public Vite React Tailwind Starter'
 

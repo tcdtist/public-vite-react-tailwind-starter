@@ -1,25 +1,49 @@
 import { useState } from 'react'
 
-import { useDelete, useFetch, usePatch, usePost } from '@/hooks/api/base'
+import { useLocation, useNavigate } from 'react-router-dom'
+
+import { DEFAULT_PAGE_SIZE } from '@/constants/common'
+import { useDelete, useFetchPagination, usePatch, usePost } from '@/hooks/api/base'
 
 const HomeContainer = () => {
-  const [page, setPage] = useState(1)
-  const limit = 10
-  const { data, loading, error, refetch } = useFetch(
-    `https://jsonplaceholder.typicode.com/todos?_page=${page}&_limit=${limit}`
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const queryParams = new URLSearchParams(location.search)
+  const initialPage = parseInt(queryParams.get('page'), DEFAULT_PAGE_SIZE) || 1
+  const limit = DEFAULT_PAGE_SIZE
+
+  const [page, setPage] = useState(initialPage)
+
+  const { data, loading, error, refetch } = useFetchPagination(
+    'https://jsonplaceholder.typicode.com/todos',
+    page,
+    limit
   )
 
   const { postData } = usePost('https://jsonplaceholder.typicode.com/todos')
   const { patchData } = usePatch('https://jsonplaceholder.typicode.com/todos')
-  // const { putData } = usePut('https://jsonplaceholder.typicode.com/todos')
   const { deleteData } = useDelete('https://jsonplaceholder.typicode.com/todos')
 
+  const updateQueryParams = (newPage) => {
+    navigate({
+      pathname: location.pathname,
+      search: `?page=${newPage}&_limit=${limit}`,
+    })
+  }
+
   const handleNextPage = () => {
-    setPage((prev) => prev + 1)
+    const newPage = page + 1
+    setPage(newPage)
+    updateQueryParams(newPage)
   }
 
   const handlePrevPage = () => {
-    if (page > 1) setPage((prev) => prev - 1)
+    if (page > 1) {
+      const newPage = page - 1
+      setPage(newPage)
+      updateQueryParams(newPage)
+    }
   }
 
   const handleCreateItem = async () => {

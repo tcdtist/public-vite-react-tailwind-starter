@@ -1,9 +1,37 @@
 /* eslint-disable consistent-return */
 import { useCallback, useEffect, useState } from 'react'
 
-import axios from 'axios'
+import { del, fetch, fetcher, patch, post, put } from '@/utils/helper/request'
 
-export const useFetch = (url, page = 1, limit = 10) => {
+export const useFetch = (url) => {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    try {
+      const response = await fetch(url)
+      setData(response)
+    } catch (err) {
+      setError(err)
+    } finally {
+      setLoading(false)
+    }
+  }, [url])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  const refetch = () => {
+    fetchData()
+  }
+
+  return { data, loading, error, refetch }
+}
+
+export const useFetchPagination = (url, page = 1, limit = 10) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -11,8 +39,8 @@ export const useFetch = (url, page = 1, limit = 10) => {
   const fetchData = useCallback(async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${url}?page=${page}&limit=${limit}`)
-      setData(response.data)
+      const response = await fetcher({ url, query: { page, pageSize: limit } })
+      setData(response)
     } catch (err) {
       setError(err)
     } finally {
@@ -38,8 +66,8 @@ export const usePost = (url) => {
   const postData = async (data) => {
     setLoading(true)
     try {
-      const response = await axios.post(url, data)
-      return response.data
+      const response = await post({ url, params: data })
+      return response
     } catch (err) {
       setError(err)
     } finally {
@@ -57,8 +85,8 @@ export const usePatch = (url) => {
   const patchData = async (data) => {
     setLoading(true)
     try {
-      const response = await axios.patch(url, data)
-      return response.data
+      const response = await patch({ url, params: data })
+      return response
     } catch (err) {
       setError(err)
     } finally {
@@ -76,8 +104,8 @@ export const usePut = (url) => {
   const putData = async (data) => {
     setLoading(true)
     try {
-      const response = await axios.put(url, data)
-      return response.data
+      const response = await put({ url, params: data })
+      return response
     } catch (err) {
       setError(err)
     } finally {
@@ -95,8 +123,8 @@ export const useDelete = (url) => {
   const deleteData = async () => {
     setLoading(true)
     try {
-      const response = await axios.delete(url)
-      return response.data
+      const response = await del(url)
+      return response
     } catch (err) {
       setError(err)
     } finally {
