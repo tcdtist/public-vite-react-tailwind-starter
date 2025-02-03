@@ -108,3 +108,6 @@ yarn-error.log*
 
 .contentlayer
 tsconfig.tsbuildinfo
+
+/dist
+
